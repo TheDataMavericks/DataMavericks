@@ -1,1 +1,226 @@
-this is the place holder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>DataMavericks</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">   
+</script>  
+  
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script> 
+
+
+
+</head>
+
+<body id="Home" data-spy="scroll" data-target=".navbar" data-offset="60">   
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> 
+                </button>
+                <a class="navbar-brand" href="#Home">DataMavericks</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right"> 
+                    <li><a href="#aboutus">About Us</a></li>  
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron jumbotron-fluid text-center"> 
+        <div id="cars" class="container">
+        <!-- Marquee tag -->
+            <div>
+                <h1>
+                    <marquee bg>Looking for a car? Find your match now!</marquee>
+                    <img id="carImage">
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <!--  -----------------Car Selection------------------------  -->
+    <h3 align="left", style="padding: 20px 20px">User's Choice: Select Preferences to get details of Top 3 matches</h3>
+    <br>
+    <br>
+    <div align="left", style="padding-left: 20px; padding-bottom: 30px"> NOTE: Compare mileage and price ranges for your matches</div>
+
+        <div id="Cars"></div>
+       
+        <div class="col-md-12 tableHeader">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-2">
+                Preference 1
+            </div>
+            
+            <div class="col-md-2">
+                Preference 2    
+            </div>
+            
+            <div class="col-md-2">
+                Preference 3
+            </div>
+            
+            <div class="col-md-2">
+                Preference 4
+            </div>
+
+            <div class="col-md-1">
+                </div>
+
+               
+        </div>
+        
+        <div class="col-md-12 ">
+
+            <div class="col-md-1">
+            </div>
+
+            <div class="col-md-2 dropDownlabels">
+                <select class="form-control" id="Preference1" name="Preference1"> 
+                    <option value="empty">Select Preference</option>
+                    <option value = "Market Category">Market Category</option>
+                    <option value = "Vehicle Style">Vehicle Style</option>
+                    <option value = "Transmission">Transmission</option>
+                    <option value = "Driven Wheels">Driven Wheels</option>
+                </select>
+            </div>
+            
+            <div class="col-md-2 dropDownlabels">
+                <select class="form-control" id="Preference2" name="Preference2"> 
+                    <option value="empty">Select Preference</option>
+                    <option value = "Market Category">Market Category</option>
+                    <option value = "Vehicle Style">Vehicle Style</option>
+                    <option value = "Transmission">Transmission</option>
+                    <option value = "Driven Wheels">Driven Wheels</option>
+                </select>    
+            </div>
+            
+            <div class="col-md-2 dropDownlabels">
+                <select class="form-control" id="Preference3" name="Preference3" > 
+                    <option value="empty">Select Preference</option>
+                    <option value = "Market Category">Market Category</option>
+                    <option value = "Vehicle Style">Vehicle Style</option>
+                    <option value = "Transmission">Transmission</option>
+                    <option value = "Driven Wheels">Driven Wheels</option>
+                </select>
+            </div>
+            
+            <div class="col-md-2 dropDownlabels">
+                <select class="form-control" id="Preference4" name="Preference4"> 
+                    <option value="empty">Select Preference</option>
+                    <option value = "Market Category">Market Category</option>
+                    <option value = "Vehicle Style">Vehicle Style</option>
+                    <option value = "Transmission">Transmission</option>
+                    <option value = "Driven Wheels">Driven Wheels</option>
+                </select>
+            </div>
+            
+            <div class="col-md-2 dropDownlabels">
+                <button class="SubmitButton" type="button" id="userSelectionButton" name="userSelectionButton" >Submit</button>
+            </div>  
+
+            <div class="col-md-1">
+            </div>  
+
+        </div>
+    
+        <div class="col-md-12 sidenav">
+    
+       </div>
+
+
+    <br>
+
+    <div id ="carStats" name="carStats"></div>
+    
+    <!-- Plotly chart will be drawn inside this DIV --></div>
+        <script>
+          <!-- JAVASCRIPT CODE GOES HERE -->
+        </script>
+
+
+    <!--  --------------End Car Selection-----------------------------  -->
+
+        <!-- About our Project -->
+        <hr>
+        <div class="jumbotron text-center"> <div id="aboutproject" class="container-fluid">
+                <div class ="row">
+                        <div class="col-lg-12 alignTextLeft">  
+                            <h2 style="font-size:30px;"><strong>DataMavericks</strong></h2>
+                            <h3 align="left" style="color:red;">Approach:</h3>
+                            <ul>
+                                <li align="left" style="font-size:20px">Train the car dataset to determine market classification</li>
+                                <li align="left" style="font-size:20px">Allow users to select their preferences</li>
+                                <li align="left" style="font-size:20px">Display top three recommendations</li>
+                            </ul>
+                            <h3 align="left" style="color:red;">Technology Stack:</h3>
+                            <ul>
+                                <li align="left" style="font-size:20px">Presentation Layer: HTML, CSS, Bootstrap</li>
+                                <li align="left" style="font-size:20px">Middleware: Flask</li>
+                                <li align="left" style="font-size:20px">Programming Languages: Python, Javascript, Jquery</li>
+                                <li align="left" style="font-size:20px">Vizualization: Plotly</li>
+                                <li align="left" style="font-size:20px">Machine Learning: k-nearest neighbor (KNN) classification and regression</li>
+                            </ul>
+                        </div>
+                </div>
+        </div> 
+
+
+        <hr>               
+        <!-- About us -->
+        <div class="jumbotron text-center"> <div id="aboutus" class="container-fluid">
+                <div class ="row">
+                    <div class="col-lg-12">  
+                        <h4>Project Team</h4>
+                        <br>
+                        <br>
+                    </div>
+                </div>         
+                <div class="row">
+                    <div class="col-lg-6">  
+                        <p class="text-center sub-head" style="color:red;">Deepa Karnani</p> 
+                        <p class="alignTextLeft">placeholder</p>           
+                    </div>
+                    <div class="col-lg-6">        
+                        <p class="text-center sub-head" style="color:red;">Riicha Mohan</p>           
+                        <p class="alignTextLeft">placeholder</p>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col-lg-6">  
+                        <p class="text-center sub-head" style="color:red;">Roderick Jean</p>             
+                        <p class="alignTextLeft">placeholder</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <p class="text-center sub-head" style="color:red;">Ira Buchberger</p>
+                        <p class="alignTextLeft">placeholder</p>           
+                    </div>
+                </div>        
+                </div> 
+        </div>          
+
+</body>
+
+<!-- Script Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+<script src="{{ url_for('static', filename='carselection.js') }}"></script>
+<script src="{{ url_for('static', filename='logic.js') }}"></script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+
+
+</html>
