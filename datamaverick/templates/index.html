@@ -30,6 +30,11 @@
 <body>
 
 
+	<div class="container-contact100">		
+	<div id = "map"></div>
+	</div>
+
+
 	<div class="container-contact100">
 		<div class="wrap-contact100">
 			<form id="form_pred" class="contact100-form validate-form" method="post" action="/api">
@@ -43,9 +48,12 @@
 					<span class="focus-input100"></span>
 				</div>
 
-				<div class="wrap-input100 validate-input" data-validate="Year of model is required">
+				<div class="wrap-input100 input100-select">
 					<span class="label-input100">Year of model</span>
-					<input class="input100" type="text" id="year_model" name="year_model" placeholder="2009">
+					
+					<select class="selection-2" id="year_model" name="year_model">
+					</select>
+					
 					<span class="focus-input100"></span>
 				</div>
 
@@ -129,11 +137,16 @@
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<script>
         $(document).ready(function(){
-        //   $('#userSelectionButton').click(function(){
-            addMakesOfCars();
-        //   });
+			addMakesOfCars();
+        });
+	  </script>
+	  
+	  <script>
+        $(document).ready(function(){
+			addYears();
         });
       </script>
+
     
 </body>
 </html>
