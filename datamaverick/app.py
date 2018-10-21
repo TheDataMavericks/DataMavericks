@@ -1,81 +1,146 @@
-from pymongo import MongoClient
-from flask import(Flask, render_template, jsonify)
+from flask import Flask, abort, jsonify, request, render_template
+from sklearn.externals import joblib
+import numpy as np
+import json
 
-#------------------------------------------------------------------------------------#
-# Flask Setup #
-#------------------------------------------------------------------------------------#
-## app = Flask(__name__)  ## For Local 
+gbr = joblib.load('model.pkl')
 
-app = Flask(__name__, template_folder='templates') # For Heroku
+app = Flask(__name__)
 
-#------------------------------------------------------------------------------------#
-# Local MongoDB connection #
-#------------------------------------------------------------------------------------#
-conn = "mongodb://localhost:27017"
-client = MongoClient(conn)
-# create / Use database
-db = client.healthi_db
-#------------------------------------------------------------------------------------#
-# MLab MongoDB connection #
-#------------------------------------------------------------------------------------#
-#### Connection for remote host
-####conn = 'mongodb://<dbuser>:<dbpassword>@ds255332.mlab.com:55332/healthi_db'
-
-# client = MongoClient(conn,ConnectTimeoutMS=30000)
-# db = client.get_default_database()
-#------------------------------------------------------------------------------------#
-#### Initialise and populate the Collection / Database
-#------------------------------------------------------------------------------------#
-# def InitializeDataBase():
-#     CreateMongoDataBase()
-#     mongodbset()
-
-#------------------------------------------------------------------------------------#
-# Home Page
-@app.route("/")
+@app.route('/')
 def home():
-    return(render_template("index.html"))
+    return render_template('index.html')
 
-# Route to 
+
+# Route to display all the five attributes to measure health of a county
 @app.route("/routes")
 def routes():
+    sample_list = []
+    Routes_dict = {}
+    Routes_dict['Makes'] = "/makes"
     
+    # Routes_dict['States']= "/states"
+    # Routes_dict['State County Names']="/countynames/<state>"
+    # Routes_dict['State Zscores Countywise'] ="/countyzscores/<state>"
+    # Routes_dict['State Details Countywise']="/countyalldetails/<state>"
+    # Routes_dict['State Geographical & Demographical Details Countywise'] = "/countygeodetails/<state>"
+    # Routes_dict['Ranks & Zscores Details Countywise'] = "/countyrankszscores/<state>"
+    
+    Routes_dict['User Selection'] = "/attributeSelection/<userSelection>"
     
     sample_list.append(Routes_dict)
     return jsonify(sample_list)
 
-# Route to 
-@app.route("<>")
-def XXXXXXXX(): 
 
+# @app.route('/api', methods=['POST'])
+# def make_prediction():
+#     data = request.get_json(force=True)
+#     #convert our json to a numpy array
+#     one_hot_data = input_to_one_hot(data)
+#     predict_request = gbr.predict([one_hot_data])
+#     output = [predict_request[0]]
+#     print(data)
+#     return jsonify(results=output)
 
+def input_to_one_hot(data):
+    # initialize the target vector with zero values
+    enc_input = np.zeros(45)
+    # set the numerical input as they are
+    enc_input[0] = data['Year']
+    enc_input[1] = data['Mileage']
+    # enc_input[2] = data['fiscal_power']
+    ##################### Mark #########################
+    # get the array of marks categories
+    makes = ['Acura', 'Alfa', 'AM', 'Aston', 'Audi', 'Bentley', 'BMW', 'Buick',
+       'Cadillac', 'Chevrolet', 'Chrysler', 'Dodge', 'Ferrari', 'FIAT',
+       'Fisker', 'Ford', 'Freightliner', 'Genesis', 'Geo', 'GMC', 'Honda',
+       'HUMMER', 'Hyundai', 'INFINITI', 'Isuzu', 'Jaguar', 'Jeep', 'Kia',
+       'Lamborghini', 'Land', 'Lexus', 'Lincoln', 'Lotus', 'Maserati',
+       'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercury', 'MINI',
+       'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
+       'Porsche', 'Ram', 'Rolls-Royce', 'Saab', 'Saturn', 'Scion',
+       'smart', 'Subaru', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen',
+       'Volvo']
+    cols = ['Year', 'Mileage', 'Make_Acura', 'Make_Audi', 'Make_BMW', 'Make_Buick',
+       'Make_Cadillac', 'Make_Chevrolet', 'Make_Chrysler', 'Make_Dodge',
+       'Make_FIAT', 'Make_Ford', 'Make_GMC', 'Make_HUMMER', 'Make_Honda',
+       'Make_Hyundai', 'Make_INFINITI', 'Make_Isuzu', 'Make_Jaguar',
+       'Make_Jeep', 'Make_Kia', 'Make_Land', 'Make_Lexus', 'Make_Lincoln',
+       'Make_MINI', 'Make_Maserati', 'Make_Mazda', 'Make_Mercedes-Benz',
+       'Make_Mercury', 'Make_Mitsubishi', 'Make_Nissan', 'Make_Oldsmobile',
+       'Make_Plymouth', 'Make_Pontiac', 'Make_Porsche', 'Make_Ram',
+       'Make_Saab', 'Make_Saturn', 'Make_Scion', 'Make_Subaru', 'Make_Suzuki',
+       'Make_Toyota', 'Make_Volkswagen', 'Make_Volvo', 'Make_smart']
 
-    return jsonify(sample_list)
+    # redefine the the user inout to match the column name
+    redefinded_user_input = 'Make_'+data['Make']
+    # search for the index in columns name list 
+    mark_column_index = cols.index(redefinded_user_input)
+    #print(mark_column_index)
+    # fullfill the found index with 1
+    enc_input[mark_column_index] = 1
+    ##################### Fuel Type ####################
+    # # get the array of fuel type
+    # fuel_type = ['Diesel', 'Essence', 'Electrique', 'LPG']
+    # # redefine the the user inout to match the column name
+    # redefinded_user_input = 'fuel_type_'+data['fuel_type']
+    # # search for the index in columns name list 
+    # fuelType_column_index = cols.index(redefinded_user_input)
+    # # fullfill the found index with 1
+    # enc_input[fuelType_column_index] = 1
+    return enc_input
 
-# Route to display 
-@app.YYYYYY("<>")
-def rankszscores( ):
+@app.route('/api',methods=['POST'])
+def get_delay():
+    print('invoked:')
+    result=request.form
+    print(result)
+    year = result['year_model']
+    mileage = result['mileage']
+    make = result['mark']
+    print(year)
+    # fiscal_power = result['fiscal_power']
+    # fuel_type = result['fuel_type']
+
+    user_input = {'Year':year, 'Mileage':mileage,  'Make':make}
     
+    print(user_input)
+    a = input_to_one_hot(user_input)
+    price_pred = gbr.predict([a])[0]
+    price_pred = round(price_pred, 2)
+    return json.dumps({'Price':price_pred})
 
-
-    return jsonify(sample_list)    
-
-#Route to display all the states present in the database
-@app.route("-----")
-def state():
+@app.route('/makes')
+def supported_makes():
+    print('makes invoked')
+    MakeList =[]
+    MakeDictionary={}
     
+    # Need to fetched from mongo. But hardcoded  
+    makes = ['Acura', 'Alfa', 'AM', 'Aston', 'Audi', 'Bentley', 'BMW', 'Buick',
+       'Cadillac', 'Chevrolet', 'Chrysler', 'Dodge', 'Ferrari', 'FIAT',
+       'Fisker', 'Ford', 'Freightliner', 'Genesis', 'Geo', 'GMC', 'Honda',
+       'HUMMER', 'Hyundai', 'INFINITI', 'Isuzu', 'Jaguar', 'Jeep', 'Kia',
+       'Lamborghini', 'Land', 'Lexus', 'Lincoln', 'Lotus', 'Maserati',
+       'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercury', 'MINI',
+       'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
+       'Porsche', 'Ram', 'Rolls-Royce', 'Saab', 'Saturn', 'Scion',
+       'smart', 'Subaru', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen',
+       'Volvo']
+
+    MakeDictionary['Makes'] = makes 
+    MakeList.append(MakeDictionary)
+    return jsonify(MakeList)  
+
+
+  
+
+
+if __name__ == '__main__':
+    app.run(port=8080, debug=True)
 
 
 
-    return jsonify(sample_list)  
 
 
-#------------------------------------------------------------------------------------#
-# Initiate Flask app
-#------------------------------------------------------------------------------------#
-if __name__=="__main__":
-    connect_args={'check_same_thread':False} 
-    InitializeDataBase() 
-    app.run(debug=True)
-    
 
