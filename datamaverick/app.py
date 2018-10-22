@@ -7,6 +7,9 @@ gbr = joblib.load('model.pkl')
 
 app = Flask(__name__)
 
+
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -18,15 +21,10 @@ def routes():
     sample_list = []
     Routes_dict = {}
     Routes_dict['Makes'] = "/makes"
+    Routes_dict['Years'] = "/years"
     
-    # Routes_dict['States']= "/states"
-    # Routes_dict['State County Names']="/countynames/<state>"
-    # Routes_dict['State Zscores Countywise'] ="/countyzscores/<state>"
-    # Routes_dict['State Details Countywise']="/countyalldetails/<state>"
-    # Routes_dict['State Geographical & Demographical Details Countywise'] = "/countygeodetails/<state>"
-    # Routes_dict['Ranks & Zscores Details Countywise'] = "/countyrankszscores/<state>"
     
-    Routes_dict['User Selection'] = "/attributeSelection/<userSelection>"
+    # Routes_dict['User Selection'] = "/attributeSelection/<userSelection>"
     
     sample_list.append(Routes_dict)
     return jsonify(sample_list)
@@ -44,7 +42,7 @@ def routes():
 
 def input_to_one_hot(data):
     # initialize the target vector with zero values
-    enc_input = np.zeros(45)
+    enc_input = np.zeros(53)
     # set the numerical input as they are
     enc_input[0] = data['Year']
     enc_input[1] = data['Mileage']
@@ -61,40 +59,34 @@ def input_to_one_hot(data):
        'Porsche', 'Ram', 'Rolls-Royce', 'Saab', 'Saturn', 'Scion',
        'smart', 'Subaru', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen',
        'Volvo']
-    cols = ['Year', 'Mileage', 'Make_Acura', 'Make_Audi', 'Make_BMW', 'Make_Buick',
-       'Make_Cadillac', 'Make_Chevrolet', 'Make_Chrysler', 'Make_Dodge',
-       'Make_FIAT', 'Make_Ford', 'Make_GMC', 'Make_HUMMER', 'Make_Honda',
+    cols = ['Year', 'Mileage', 'Make_AM', 'Make_Acura', 'Make_Aston', 'Make_Audi',
+       'Make_BMW', 'Make_Bentley', 'Make_Buick', 'Make_Cadillac',
+       'Make_Chevrolet', 'Make_Chrysler', 'Make_Dodge', 'Make_FIAT',
+       'Make_Ford', 'Make_GMC', 'Make_Genesis', 'Make_HUMMER', 'Make_Honda',
        'Make_Hyundai', 'Make_INFINITI', 'Make_Isuzu', 'Make_Jaguar',
-       'Make_Jeep', 'Make_Kia', 'Make_Land', 'Make_Lexus', 'Make_Lincoln',
-       'Make_MINI', 'Make_Maserati', 'Make_Mazda', 'Make_Mercedes-Benz',
-       'Make_Mercury', 'Make_Mitsubishi', 'Make_Nissan', 'Make_Oldsmobile',
-       'Make_Plymouth', 'Make_Pontiac', 'Make_Porsche', 'Make_Ram',
-       'Make_Saab', 'Make_Saturn', 'Make_Scion', 'Make_Subaru', 'Make_Suzuki',
-       'Make_Toyota', 'Make_Volkswagen', 'Make_Volvo', 'Make_smart']
+       'Make_Jeep', 'Make_Kia', 'Make_Lamborghini', 'Make_Land', 'Make_Lexus',
+       'Make_Lincoln', 'Make_Lotus', 'Make_MINI', 'Make_Maserati',
+       'Make_Maybach', 'Make_Mazda', 'Make_Mercedes-Benz', 'Make_Mercury',
+       'Make_Mitsubishi', 'Make_Nissan', 'Make_Oldsmobile', 'Make_Plymouth',
+       'Make_Pontiac', 'Make_Porsche', 'Make_Ram', 'Make_Saab', 'Make_Saturn',
+       'Make_Scion', 'Make_Subaru', 'Make_Suzuki', 'Make_Tesla', 'Make_Toyota',
+       'Make_Volkswagen', 'Make_Volvo', 'Make_smart']
 
     # redefine the the user inout to match the column name
     redefinded_user_input = 'Make_'+data['Make']
-    # search for the index in columns name list 
-    mark_column_index = cols.index(redefinded_user_input)
-    #print(mark_column_index)
-    # fullfill the found index with 1
-    enc_input[mark_column_index] = 1
-    ##################### Fuel Type ####################
-    # # get the array of fuel type
-    # fuel_type = ['Diesel', 'Essence', 'Electrique', 'LPG']
-    # # redefine the the user inout to match the column name
-    # redefinded_user_input = 'fuel_type_'+data['fuel_type']
-    # # search for the index in columns name list 
-    # fuelType_column_index = cols.index(redefinded_user_input)
-    # # fullfill the found index with 1
-    # enc_input[fuelType_column_index] = 1
+
+    # Make sure that the index exists in the columns to prevent ValueError 
+    if redefinded_user_input in cols :
+        # search for the index in columns name list 
+        mark_column_index = cols.index(redefinded_user_input)
+        #print(mark_column_index)
+        # fullfill the found index with 1
+        enc_input[mark_column_index] = 1
     return enc_input
 
 @app.route('/api',methods=['POST'])
 def get_delay():
-    print('invoked:')
     result=request.form
-    print(result)
     year = result['year_model']
     mileage = result['mileage']
     make = result['mark']
@@ -132,6 +124,20 @@ def supported_makes():
     MakeList.append(MakeDictionary)
     return jsonify(MakeList)  
 
+
+@app.route('/years')
+def supported_years():
+    print('years invoked')
+    YearsList =[]
+    YearsDictionary={}
+    
+    # Need to fetched from mongo. But hardcoded at the momement.  
+    years = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007','2008', '2009', '2010', '2011', '2012', '2013','2014', '2015', '2016', '2017', '2018']
+
+    YearsDictionary['Years'] = years 
+    YearsList.append(YearsDictionary)
+    print(YearsList)
+    return jsonify(YearsList)  
 
   
 
