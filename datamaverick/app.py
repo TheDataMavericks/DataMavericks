@@ -15,17 +15,12 @@ def home():
     return render_template('index.html')
 
 
-# Route to display all the five attributes to measure health of a county
 @app.route("/routes")
 def routes():
     sample_list = []
     Routes_dict = {}
     Routes_dict['Makes'] = "/makes"
     Routes_dict['Years'] = "/years"
-    
-    
-    # Routes_dict['User Selection'] = "/attributeSelection/<userSelection>"
-    
     sample_list.append(Routes_dict)
     return jsonify(sample_list)
 
@@ -132,7 +127,7 @@ def supported_years():
     YearsDictionary={}
     
     # Need to fetched from mongo. But hardcoded at the momement.  
-    years = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007','2008', '2009', '2010', '2011', '2012', '2013','2014', '2015', '2016', '2017', '2018']
+    years = [ '1997','1998' , '1999' , '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007','2008', '2009', '2010', '2011', '2012', '2013','2014', '2015', '2016', '2017', '2018']
 
     YearsDictionary['Years'] = years 
     YearsList.append(YearsDictionary)
