@@ -3,11 +3,9 @@ from sklearn.externals import joblib
 import numpy as np
 import json
 
-gbr = joblib.load('model.pkl')
+TrainedModel = joblib.load('model.pkl')
 
 app = Flask(__name__)
-
-
 
 
 @app.route('/')
@@ -25,36 +23,15 @@ def routes():
     return jsonify(sample_list)
 
 
-# @app.route('/api', methods=['POST'])
-# def make_prediction():
-#     data = request.get_json(force=True)
-#     #convert our json to a numpy array
-#     one_hot_data = input_to_one_hot(data)
-#     predict_request = gbr.predict([one_hot_data])
-#     output = [predict_request[0]]
-#     print(data)
-#     return jsonify(results=output)
-
-def input_to_one_hot(data):
+def Get_Prediction_Matrix(data):
     # initialize the target vector with zero values
-    enc_input = np.zeros(53)
+    Prediction_Matrix = np.zeros(53)
     # set the numerical input as they are
-    enc_input[0] = data['Year']
-    enc_input[1] = data['Mileage']
-    # enc_input[2] = data['fiscal_power']
+    Prediction_Matrix[0] = data['Year']
+    Prediction_Matrix[1] = data['Mileage']
     ##################### Mark #########################
-    # get the array of marks categories
-    makes = ['Acura', 'Alfa', 'AM', 'Aston', 'Audi', 'Bentley', 'BMW', 'Buick',
-       'Cadillac', 'Chevrolet', 'Chrysler', 'Dodge', 'Ferrari', 'FIAT',
-       'Fisker', 'Ford', 'Freightliner', 'Genesis', 'Geo', 'GMC', 'Honda',
-       'HUMMER', 'Hyundai', 'INFINITI', 'Isuzu', 'Jaguar', 'Jeep', 'Kia',
-       'Lamborghini', 'Land', 'Lexus', 'Lincoln', 'Lotus', 'Maserati',
-       'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercury', 'MINI',
-       'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
-       'Porsche', 'Ram', 'Rolls-Royce', 'Saab', 'Saturn', 'Scion',
-       'smart', 'Subaru', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen',
-       'Volvo']
-    cols = ['Year', 'Mileage', 'Make_AM', 'Make_Acura', 'Make_Aston', 'Make_Audi',
+   
+    Trained_Model_Columns = ['Year', 'Mileage', 'Make_AM', 'Make_Acura', 'Make_Aston', 'Make_Audi',
        'Make_BMW', 'Make_Bentley', 'Make_Buick', 'Make_Cadillac',
        'Make_Chevrolet', 'Make_Chrysler', 'Make_Dodge', 'Make_FIAT',
        'Make_Ford', 'Make_GMC', 'Make_Genesis', 'Make_HUMMER', 'Make_Honda',
@@ -68,70 +45,68 @@ def input_to_one_hot(data):
        'Make_Volkswagen', 'Make_Volvo', 'Make_smart']
 
     # redefine the the user inout to match the column name
-    redefinded_user_input = 'Make_'+data['Make']
+    User_Selected_Model = 'Make_'+data['Make']
 
-    # Make sure that the index exists in the columns to prevent ValueError 
-    if redefinded_user_input in cols :
+    # Make sure that the index exists in the columns of the trained model to prevent 'ValueError' 
+    if User_Selected_Model in Trained_Model_Columns :
         # search for the index in columns name list 
-        mark_column_index = cols.index(redefinded_user_input)
-        #print(mark_column_index)
+        Make_Column_Index = Trained_Model_Columns.index(User_Selected_Model)
         # fullfill the found index with 1
-        enc_input[mark_column_index] = 1
-    return enc_input
+        Prediction_Matrix[Make_Column_Index] = 1
+        return Prediction_Matrix
+    else:
+        return None
 
 @app.route('/api',methods=['POST'])
-def get_delay():
+def Make_Prediction():
     result=request.form
     year = result['year_model']
     mileage = result['mileage']
     make = result['mark']
-    print(year)
-    # fiscal_power = result['fiscal_power']
-    # fuel_type = result['fuel_type']
-
-    user_input = {'Year':year, 'Mileage':mileage,  'Make':make}
     
-    print(user_input)
-    a = input_to_one_hot(user_input)
-    price_pred = gbr.predict([a])[0]
-    price_pred = round(price_pred, 2)
-    return json.dumps({'Price':price_pred})
+    User_Inputs = {'Year':year, 'Mileage':mileage,  'Make':make}
+    
+    matrix = Get_Prediction_Matrix(User_Inputs)
+    if (matrix is not None):
+        #Make prediction from the model. 
+        Price = TrainedModel.predict([matrix])[0]
+        Price = round(Price, 2)
+        return json.dumps({'Price':Price})
+    else:
+        return json.dumps({'Price':-1})
 
 @app.route('/makes')
-def supported_makes():
-    print('makes invoked')
+def Supported_Makes():
     MakeList =[]
     MakeDictionary={}
-    
-    # Need to fetched from mongo. But hardcoded  
-    makes = ['Acura', 'Alfa', 'AM', 'Aston', 'Audi', 'Bentley', 'BMW', 'Buick',
-       'Cadillac', 'Chevrolet', 'Chrysler', 'Dodge', 'Ferrari', 'FIAT',
-       'Fisker', 'Ford', 'Freightliner', 'Genesis', 'Geo', 'GMC', 'Honda',
-       'HUMMER', 'Hyundai', 'INFINITI', 'Isuzu', 'Jaguar', 'Jeep', 'Kia',
-       'Lamborghini', 'Land', 'Lexus', 'Lincoln', 'Lotus', 'Maserati',
-       'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercury', 'MINI',
-       'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
-       'Porsche', 'Ram', 'Rolls-Royce', 'Saab', 'Saturn', 'Scion',
-       'smart', 'Subaru', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen',
-       'Volvo']
-
-    MakeDictionary['Makes'] = makes 
+    MakeDictionary['Makes'] = Get_Makes() 
     MakeList.append(MakeDictionary)
     return jsonify(MakeList)  
 
+def Get_Makes():
+    # Need to fetched from mongo. But hardcoded at the moment!
+    makes = ['Acura', 'AM', 'Aston', 'Audi', 'Bentley', 'BMW', 'Buick',
+       'Chevrolet', 'Chrysler', 'Dodge', 'FIAT', 'Ford', 'Genesis', 'GMC', 'Honda',
+       'HUMMER', 'Hyundai', 'INFINITI', 'Isuzu', 'Jaguar', 'Jeep', 'Kia',
+       'Lamborghini', 'Land', 'Lexus', 'Lincoln', 'Lotus', 'Maserati',
+       'Maybach', 'Mazda', 'Mercedes-Benz', 'Mercury', 'MINI',
+       'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
+       'Porsche', 'Ram', 'Saab', 'Saturn', 'Scion', 'smart', 'Subaru', 'Suzuki', 
+       'Tesla', 'Toyota', 'Volkswagen', 'Volvo', 'Dummy_Make']
+    return makes
+
 
 @app.route('/years')
-def supported_years():
-    print('years invoked')
+def Supported_Years():
     YearsList =[]
     YearsDictionary={}
     
-    # Need to fetched from mongo. But hardcoded at the momement.  
+    # Need to be fetched from mongo. But hardcoded at the momement.  
     years = [ '1997','1998' , '1999' , '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007','2008', '2009', '2010', '2011', '2012', '2013','2014', '2015', '2016', '2017', '2018']
 
     YearsDictionary['Years'] = years 
     YearsList.append(YearsDictionary)
-    print(YearsList)
+    # print(YearsList)
     return jsonify(YearsList)  
 
   

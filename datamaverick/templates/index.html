@@ -30,7 +30,7 @@
 <body>
 
 
-	<div class="container-contact100">		
+	<div>		
 	<div id = "map"></div>
 	</div>
 
@@ -136,16 +136,18 @@
 	</script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<script>
-        $(document).ready(function(){
+		// jQuery call invoke javascript function.
+		$(document).ready(function(){
 			addMakesOfCars();
+			addYears();
         });
 	  </script>
 	  
-	  <script>
+	  <!-- <script>
         $(document).ready(function(){
-			addYears();
+			
         });
-      </script>
+      </script> -->
 
     
 </body>

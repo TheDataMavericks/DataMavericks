@@ -4,7 +4,7 @@ function addMakesOfCars(){
     var makeData;
 
     // load makes dropdown from Flask Route - '/makes'
-
+    // Ajax call through d3.
     Plotly.d3.json(makesUrl,function(error,makeData){
     if (error) {
         return console.warn(error);
@@ -17,9 +17,7 @@ function addMakesOfCars(){
             .attr('value', make)
             .text(make)
         });
-
     });
- 
 }
 
 function addYears(){
@@ -28,7 +26,6 @@ function addYears(){
     var yearData;
 
     // load year dropdown from Flask Route - '/years'
-
     Plotly.d3.json(yearsUrl,function(error,yearData){
     if (error) {
         return console.warn(error);
@@ -44,14 +41,15 @@ function addYears(){
     });
 }
 
-function validateForm(){
-    var x=document.forms["form_pred"]["mileage"].value;
 
-    if ( !isNaN(x) && x>0 && x <400000)
+function validateForm(){
+    var mileage = document.forms["form_pred"]["mileage"].value;
+
+    if ( !isNaN(mileage) && mileage>0 && mileage <400000)
     {
         return true;
     }
-    else if (isNaN(x)) {
+    else if (isNaN(mileage)) {
         swal('Please enter numeric data only in the mileage field.','' ,'failure')
         return false;
     }
@@ -145,18 +143,28 @@ function validateForm(){
 // }
 
 function makePrediction() {
+    // get a button whose id is 'predict'
     $("button#predict").click(function(e){
         e.preventDefault();
+
         // Prevent errors in the inputs
         if (validateForm()) {
-          $.ajax({
+            // Ajax call through jQuery.
+            $.ajax({
                 method : "POST",
                 url : window.location.href + 'api',
                 data : $('form').serialize(),
                 success : function(result){
                     var json_result = JSON.parse(result);
                     var price = json_result['Price'];
-                    swal('Estimated price is: $'+price.toLocaleString(), '','success');
+                    if (price !=-1)
+                        swal('Estimated price is: $'+price.toLocaleString(), '','success');
+                    else
+                        {
+                           //var make = data['mark'];
+                           var message = 'We are currently not supporting the make that you have requested in our inventory.'; 
+                           swal(message, '','failure');  
+                        }
                 },
                 error : function(){
                     console.log("error")
