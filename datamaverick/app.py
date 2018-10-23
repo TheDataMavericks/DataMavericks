@@ -92,7 +92,7 @@ def Get_Makes():
        'Maybach', 'Mazda', 'Mercedes-Benz', 'Mercury', 'MINI',
        'Mitsubishi', 'Nissan', 'Oldsmobile', 'Plymouth', 'Pontiac',
        'Porsche', 'Ram', 'Saab', 'Saturn', 'Scion', 'smart', 'Subaru', 'Suzuki', 
-       'Tesla', 'Toyota', 'Volkswagen', 'Volvo', 'Dummy_Make']
+       'Tesla', 'Toyota', 'Volkswagen', 'Volvo']
     return makes
 
 

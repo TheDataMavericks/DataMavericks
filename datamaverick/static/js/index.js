@@ -1,14 +1,8 @@
 
-
-
-
-
-
+// Responsible for fetching and populating the drop down for makes of cars!
 function addMakesOfCars(){
-
     var makesUrl = '/makes';
     var makeData;
-
     // load makes dropdown from Flask Route - '/makes'
     // Ajax call through d3.
     Plotly.d3.json(makesUrl,function(error,makeData){
@@ -26,6 +20,7 @@ function addMakesOfCars(){
     });
 }
 
+// Responsible for fetching and populating the drop down for years of cars!
 function addYears(){
 
     var yearsUrl = '/years';
@@ -47,21 +42,36 @@ function addYears(){
     });
 }
 
-
-function validateForm(){
+// Responsible for validating user inputs!
+function validateForm() {
     var mileage = document.forms["form_pred"]["mileage"].value;
 
-    if ( !isNaN(mileage) && mileage>0 && mileage <400000)
+    if ( !isNaN(mileage) && mileage > 0 && mileage <400000)
     {
         return true;
     }
     else if (isNaN(mileage)) {
-        swal('Please enter numeric data only in the mileage field.','' ,'failure')
+        
+        // Display the sweet alert!
+        swal({
+            type: 'error',
+            title: 'Please enter numeric data only in the mileage field.',
+            text: 'Format error!' //,
+            // footer: '<a href>Why do I have this issue?</a>'
+          });
         return false;
     }
     else
     {
-        swal('Please enter data in the range of 0 - 400,000 only','', 'failure')
+        // Display the sweet alert!
+        swal({
+            type: 'error',
+            title: 'Please enter data in the range of 0 - 400,000 only',
+            text: 'Incorrect range!' //,
+            // footer: '<a href>Why do I have this issue?</a>'
+          });
+
+        
         return false;
     }
 }
@@ -169,14 +179,22 @@ function makePrediction() {
                     if (price !=-1)
                         {
                             message = 'Estimated price is: $'+price.toLocaleString();
-                            swal(message, '','success');     
+                            // Display the sweet alert!
+                            swal({
+                                type: 'success',
+                                title: message,
+                            });
                         }
                     else
                         {
-                           //var make = data['mark'];
-                           var message = 'We are currently not supporting the make that you have requested in our inventory.'; 
-                           swal(message, '','failure');  
+                            var message = 'We are currently not supporting the make that you have requested in our inventory.';
+                            // Display the sweet alert!
+                            swal({
+                                type: 'error',
+                                title: message,
+                            });
                         }
+                     // Notify voice message to the user!   
                      TextToSpeech(message);   
                 },
                 error : function(){
