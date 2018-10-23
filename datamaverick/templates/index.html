@@ -129,12 +129,13 @@
 	
 	<!-- include sweetAlert plugin -->
 	<script src="{{ url_for('static',filename='js/sweetalert2.all.js') }}"></script>
+	
+	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<script type="text/javascript">
 		$(function () {
 			makePrediction();
 		});
 	</script>
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<script>
 		// jQuery call invoke javascript function.
 		$(document).ready(function(){

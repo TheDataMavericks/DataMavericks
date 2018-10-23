@@ -1,3 +1,9 @@
+
+
+
+
+
+
 function addMakesOfCars(){
 
     var makesUrl = '/makes';
@@ -157,14 +163,21 @@ function makePrediction() {
                 success : function(result){
                     var json_result = JSON.parse(result);
                     var price = json_result['Price'];
+                
+                    var text = "";
+                    var message ="";
                     if (price !=-1)
-                        swal('Estimated price is: $'+price.toLocaleString(), '','success');
+                        {
+                            message = 'Estimated price is: $'+price.toLocaleString();
+                            swal(message, '','success');     
+                        }
                     else
                         {
                            //var make = data['mark'];
                            var message = 'We are currently not supporting the make that you have requested in our inventory.'; 
                            swal(message, '','failure');  
                         }
+                     TextToSpeech(message);   
                 },
                 error : function(){
                     console.log("error")
@@ -173,3 +186,11 @@ function makePrediction() {
         }
     })
 }
+
+
+function TextToSpeech(text) {
+    speechSynthesis.speak(
+        new SpeechSynthesisUtterance(text)
+      );
+}
+
