@@ -1,1 +1,1 @@
-web: gunicorn HealthiCountyR.app:app
+web: gunicorn datamaverick.app:app

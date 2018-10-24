@@ -1,2 +1,1 @@
-
-FLASK_APP=HealthiCountyR/app.py flask run
+FLASK_APP=datamaverick/app.py flask run
