@@ -46,16 +46,18 @@ function addYears(){
 function validateForm() {
     var mileage = document.forms["form_pred"]["mileage"].value;
 
+    var message = "";
     if ( !isNaN(mileage) && mileage > 0 && mileage <400000)
     {
         return true;
     }
     else if (isNaN(mileage)) {
         
+        message = 'Please enter numeric data only in the mileage field.';
         // Display the sweet alert!
         swal({
             type: 'error',
-            title: 'Please enter numeric data only in the mileage field.',
+            title: message ,
             text: 'Format error!' //,
             // footer: '<a href>Why do I have this issue?</a>'
           });
@@ -63,15 +65,17 @@ function validateForm() {
     }
     else
     {
+        message = 'Please enter data in the range of 0 - 400,000 only';
         // Display the sweet alert!
         swal({
             type: 'error',
-            title: 'Please enter data in the range of 0 - 400,000 only',
+            title: message,
             text: 'Incorrect range!' //,
             // footer: '<a href>Why do I have this issue?</a>'
           });
 
-        
+          TextToSpeech(message);
+          
         return false;
     }
 }
@@ -187,7 +191,7 @@ function makePrediction() {
                         }
                     else
                         {
-                            var message = 'We are currently not supporting the make that you have requested in our inventory.';
+                            message = 'We are currently not supporting the make that you have requested in our inventory.';
                             // Display the sweet alert!
                             swal({
                                 type: 'error',
