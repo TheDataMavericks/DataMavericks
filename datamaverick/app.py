@@ -3,7 +3,7 @@ from sklearn.externals import joblib
 import numpy as np
 import json
 
-TrainedModel = joblib.load('model.pkl')
+TrainedModel = joblib.load('./datamaverick/model.pkl')
 
 app = Flask(__name__)
 
